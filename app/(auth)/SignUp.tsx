@@ -19,14 +19,13 @@ export default function RegisterScreen() {
         fullName: '',
         email: '',
         password: '',
+        confirmPassword: '',
         street: '',
         city: '',
         state: '',
-        province: '',
         postalCode: '',
         cnic: '',
-        picture: '',
-        role: '',
+        picture: ''
     });
 
     const [secureText, setSecureText] = useState(true);
@@ -50,8 +49,36 @@ export default function RegisterScreen() {
         }
     };
 
-    const handleRegister = () => {
-        console.log('Register:', form);
+    const handleRegister = async () => {
+        console.log('Register:');
+        try {
+            console.log('Now in try catch');
+            const IP = 'http://10.13.23.2:3000'; // Replace with your local machine's IP address
+            // const response = await axios.post(`${IP}/api/v1/auth/signup`, form);
+            // Alert.alert('Success', 'Registration successful');
+            // Form validation ka code yahan add kar sakte hain
+            const formData={
+                fullName: form.fullName,
+                email: form.email,
+                password: form.password,
+                confirmPassword: form.confirmPassword,
+                street: form.street,
+                city: form.city,
+                state: form.state,
+                postalCode: form.postalCode,
+                cnic: form.cnic,
+                picture: form.picture,
+            }
+            const response = await axios.post(`${IP}/api/v1/auth/signup`, formData);
+    
+            console.log('Registration successful:', response.data);
+            // Success ke baad app login page par navigate kar sakte hain
+            // router.push('/login');
+    
+        } catch (error) {
+            // console.error('Registration failed:', error.response?.data || error.message);
+            // Yahan par error handling ka code add kar sakte hain
+        }
     };
 
     return (
@@ -119,6 +146,27 @@ export default function RegisterScreen() {
                         />
                     </TouchableOpacity>
                 </View>
+                <View style={styles.inputContainer}>
+                    <Ionicons name="lock-closed" size={20} color="#000" style={styles.inputIcon} />
+                    <TextInput
+                        style={styles.input}
+                        placeholder=" Confirm Password"
+                        placeholderTextColor="#666"
+                        value={form.confirmPassword}
+                        onChangeText={(text) => handleInputChange('confirmPassword', text)}
+                        secureTextEntry={secureText}
+                    />
+                    <TouchableOpacity
+                        onPress={() => setSecureText(!secureText)}
+                        style={styles.eyeIcon}
+                    >
+                        <Ionicons
+                            name={secureText ? 'eye-off' : 'eye'}
+                            size={20}
+                            color="#000"
+                        />
+                    </TouchableOpacity>
+                </View>
 
                 <View style={styles.inputContainer}>
                     <Ionicons name="home" size={20} color="#000" style={styles.inputIcon} />
@@ -146,7 +194,7 @@ export default function RegisterScreen() {
                     <Ionicons name="map" size={20} color="#000" style={styles.inputIcon} />
                     <TextInput
                         style={styles.input}
-                        placeholder="State/Province"
+                        placeholder="State"
                         placeholderTextColor="#666"
                         value={form.state}
                         onChangeText={(text) => handleInputChange('state', text)}
